@@ -1,0 +1,34 @@
+﻿@model CumulativeProject.Models.Teacher
+@{
+    ViewBag.Title = "Show Teachers";
+}
+
+<a class="navlink" href="/Teacher/ListTeachers">Back To Teachers</a>
+
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+</style>
+<div id="containershow">
+    <h2>@Model.TeacherFname @Model.TeacherLname</h2>
+    <table>
+        <tr>
+            <th>Teacher ID</th>
+            <th>Employee Number</th>
+            <th>Hire date</th>
+            <th>Salary</th>
+        </tr>
+        <tr>
+            <td>@Model.TeacherId</td>
+            <td>@Model.EmployeeNumber</td>
+            <td>@Model.HireDate</td>
+            <td>@Model.Salary</td>
+        </tr>
+    </table>
+</div>
+<div style="margin-top:10px">
+    <button type="submit" style="background:black"><a href="/Teacher/DeleteConfirm/@Model.TeacherId" style="color: white; text-decoration: none">Delete</a></button>
+</div>
+
+
