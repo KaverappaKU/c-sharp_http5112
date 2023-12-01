@@ -4,8 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Routing;
 using CumulativeProject.Models;
 using MySql.Data.MySqlClient;
+using System.Web.Http.Cors;
+using System.Diagnostics;
+using Microsoft.Ajax.Utilities;
 
 namespace CumulativeProject.Controllers
 {
@@ -17,14 +21,14 @@ namespace CumulativeProject.Controllers
         /// <summary>
         /// Returns a list of Teachers in the system
         /// </summary>
-        /// <example>GET api/Teacher/ListTeachers</example>
+        /// <example>GET api/Teacher/ListTeachers -> Christine Bittle
         /// <returns>
         /// A list of teacher objects.
         /// </returns>
 
         [HttpGet]
-        [Route("api/listTeachers")]
-        public IEnumerable<Teacher> ListTeachers()
+        [Route("api/Teacher/listTeachers/{SearchKey?}")]
+        public IEnumerable<Teacher> ListTeachers(string SearchKey = null)
         {
             //Create an instance of a connection
             MySqlConnection Conn = School.AccessDatabase();
@@ -36,12 +40,14 @@ namespace CumulativeProject.Controllers
             MySqlCommand cmd = Conn.CreateCommand();
 
             //SQL QUERY
-            cmd.CommandText = "Select * from Teachers";
+            cmd.CommandText = "Select * from teachers where lower(teacherfname) like lower(@key) or lower(teacherlname) like lower(@key) or lower(concat(teacherfname, ' ', teacherlname)) like lower(@key)";
 
+            cmd.Parameters.AddWithValue("@key", "%" + SearchKey + "%");
+            cmd.Prepare();
             //Gather Result Set of Query into a variable
             MySqlDataReader ResultSet = cmd.ExecuteReader();
 
-            //Create an empty list of Authors
+            //Create an empty list of Teachers
             List<Teacher> Teachers = new List<Teacher> { };
 
             //Loop Through Each Row the Result Set
@@ -78,13 +84,21 @@ namespace CumulativeProject.Controllers
         }
 
         /// <summary>
-        /// Returns teacher details from the database by specifying the primary key authorid
+        /// Returns teacher details from the database by specifying the primary key teacherid
         /// </summary>
         /// <param name="id">the teacher ID in the database</param>
         /// <returns>A teacher object</returns>
-        /// 
+        /// The payload would look like this
+        /// Example: The response would look like this
+        /// {
+        ///     "TeacherFname": "John",
+        ///     "TeacherLname": "Doe",
+        ///     "EmployeeNumber": "T404",
+        ///     "HireDate": "2020-10-28",
+        ///     "Salary": "80"
+        /// }
         [HttpGet]
-        [Route("api/showTeachers")]
+        [Route("api/Teacher/showTeachers/{id}")]
         public Teacher FindTeacher(int id)
         {
             Teacher NewTeacher = new Teacher();
@@ -126,5 +140,77 @@ namespace CumulativeProject.Controllers
             return NewTeacher;
         }
 
+        /// <summary>
+        /// Adds a teacher to the list
+        /// </summary>
+        /// <param name="NewTeacher"></param>
+        /// Example: The payload would look like this
+        /// {
+        ///     "TeacherFname": "John",
+        ///     "TeacherLname": "Doe",
+        ///     "EmployeeNumber": "T404",
+        ///     "HireDate": "2020-10-28",
+        ///     "Salary": "80"
+        /// }
+
+        [HttpPost]
+        [Route("api/TeacherData/AddTeacher")]
+        [EnableCors(origins:"*", methods:"*", headers:"*")]
+        public void AddTeacher([FromBody]Teacher NewTeacher)
+        {
+            Debug.WriteLine("new teacher is " + NewTeacher);
+            // Creating an instance for DB connection
+            MySqlConnection Conn = School.AccessDatabase();
+
+            Conn.Open();    
+
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // insert query to insert the details of the teacher manually from the form, TeacherId is not required as
+            // it is a auto-increment value which updates as you add a record
+            cmd.CommandText = "insert into teachers (teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFname,@TeacherLname, @EmployeeNumber, @HireDate, @Salary)";
+
+            cmd.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
+            cmd.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
+            cmd.Parameters.AddWithValue("@HireDate", NewTeacher.HireDate);
+            cmd.Parameters.AddWithValue("@Salary", NewTeacher.Salary);
+
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
+
+            Conn.Close();
+        }
+
+        /// <summary>
+        /// Deletes a teacher record from the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// Example:
+        /// POST api/Teacher/DeleteTeacher/10
+        
+        [HttpPost]
+
+        public void DeleteTeacher(int id)
+        {
+
+            MySqlConnection Conn = School.AccessDatabase();
+
+            Conn.Open();
+
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // Delete query to delete the record from the DB
+            cmd.CommandText = "delete from teachers where teacherid=@id";
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Prepare();
+
+            cmd.ExecuteNonQuery();
+
+            Conn.Close();
+
+
+        }
     }
 }

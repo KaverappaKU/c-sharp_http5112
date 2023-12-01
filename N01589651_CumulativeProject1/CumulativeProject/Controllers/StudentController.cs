@@ -14,7 +14,7 @@ namespace CumulativeProject.Controllers
         {
             return View();
         }
-        //GET : /Student/List
+        //GET : /Student/ListStudents
         public ActionResult ListStudents()
         {
             StudentDataController controller = new StudentDataController();

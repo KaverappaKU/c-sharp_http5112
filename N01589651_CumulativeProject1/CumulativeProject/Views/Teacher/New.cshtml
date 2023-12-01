@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "New";
+}
+
+<style>
+    .teacherdata {
+        margin-top: 10px;
+    }
+</style>
+
+<script src="~/Scripts/validation.js"></script>
+<div id="addteachers">
+    <nav>
+        <a class="navlink" href="/Teacher/ListTeachers">Back To Teachers</a>
+    </nav>
+    <h2>Add Teachers</h2>
+    <form name="add_teacher">
+        <div class="teacherdata">
+            <label for="TeacherFname">First Name:</label>
+            <input type="text" id="TeacherFname" name="TeacherFname" placeholder="Christine"/>
+
+        </div>
+        <div class="teacherdata">
+            <label for="TeacherLname">Last Name:</label>
+            <input type="text" id="TeacherLname" name="TeacherLname" placeholder="Bittle"/>
+
+        </div>
+        <div class="teacherdata">
+            <label for="EmployeeNumber">Employee Number:</label>
+            <input type="text" id="EmployeeNumber" name="EmployeeNumber" placeholder="T404"/>
+        </div>
+        <div class="teacherdata">
+            <label for="HireDate">Hire Date:</label>
+            <input type="text" id="HireDate" name="HireDate" placeholder="2020-10-22"/>
+        </div>
+        <div class="teacherdata">
+            <label for="Salary">Salary:</label>
+            <input type="text" id="Salary" name="Salary" placeholder="90"/>
+        </div>
+        <div class="teacherdata">
+            <input type="submit" value="Add Teacher" />
+        </div>
+    </form>
+</div>
+
