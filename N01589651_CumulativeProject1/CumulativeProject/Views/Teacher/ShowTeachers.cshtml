@@ -4,6 +4,7 @@
 }
 
 <a class="navlink" href="/Teacher/ListTeachers">Back To Teachers</a>
+
 <style>
     table, th, td {
         border: 1px solid black;
@@ -25,6 +26,9 @@
             <td>@Model.Salary</td>
         </tr>
     </table>
+</div>
+<div style="margin-top:10px">
+    <button type="submit" style="background:black"><a href="/Teacher/DeleteConfirm/@Model.TeacherId" style="color: white; text-decoration: none">Delete</a></button>
 </div>
 
 

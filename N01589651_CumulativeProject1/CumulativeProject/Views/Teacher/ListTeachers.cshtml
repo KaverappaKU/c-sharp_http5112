@@ -6,6 +6,10 @@
 
 <a class="navlink" href="/">Back To Home</a>
 <h2>ListTeachers</h2>
+<form action="/Teacher/ListTeachers" method="GET">
+    <input type="text" name="SearchKey" autocomplete="off" />
+    <input type="submit" value="Search" />
+</form>
 <p>This page should be showing information about all Teachers</p>
 
 <div id="containerlist">
@@ -16,4 +20,9 @@
             <div class="col-md-12"><a href="/Teacher/ShowTeachers/@teacher.TeacherId">@teacher.TeacherFname @teacher.TeacherLname</a></div>
         </div>
     }
+</div>
+
+<div style="margin-top: 20px" >
+    <h4>Click below to add a teacher to the list</h4>
+   <Button type="submit" style="background: black"><a href="/Teacher/New" style="text-decoration: none; color: white">Add Teacher</a></Button>
 </div>
