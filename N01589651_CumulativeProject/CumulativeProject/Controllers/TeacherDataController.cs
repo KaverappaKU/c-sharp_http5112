@@ -152,6 +152,10 @@ namespace CumulativeProject.Controllers
         ///     "HireDate": "2020-10-28",
         ///     "Salary": "80"
         /// }
+        /// <example>
+        /// METHOD 2 --> POST : curl "http://localhost:51037/api/TeacherData/AddTeacher/11" -d @addTeacher.json -H "Content-type: application/json"
+        /// METHOD 2 --> POST : curl "http://localhost:51037/api/TeacherData/AddTeacher/10" -d @addTeacher.json -H "Content-type: application/json"
+        /// </example>
 
         [HttpPost]
         [Route("api/TeacherData/AddTeacher")]
@@ -209,7 +213,69 @@ namespace CumulativeProject.Controllers
             cmd.ExecuteNonQuery();
 
             Conn.Close();
+        }
 
+    /// <summary>
+    ///  This function updates the teacher details for the specific id
+    /// </summary>
+    /// <param name="id">TeacherId of a teacher</param>
+    /// <param name="TeacherInfo">Teacher object</param>
+    /// <exception cref="ApplicationException"></exception>
+    /// <example>
+    /// POST api/TeacherData/UpdateTeacher/11
+    /// Form Data, request body
+    ///{
+    ///     "TeacherFname": "Kaverappa",
+    ///     "TeacherLname": "KU",
+    ///     "EmployeeNumber": "N015",
+    ///     "HireDate": "2023-12-14",
+    ///     "salary": "10000"
+    ///}
+    /// </example>
+    /// <example>
+    /// METHOD 2 --> POST : curl "http://localhost:51037/api/TeacherData/UpdateTeacher/11" -d @updateTeacher.json -H "Content-type: application/json"
+    /// METHOD 2 --> POST : curl "http://localhost:51037/api/TeacherData/UpdateTeacher/10" -d @updateTeacher.json -H "Content-type: application/json"
+    /// </example>
+    [HttpPost]
+        [Route("api/TeacherData/UpdateTeacher/{id}")]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
+        public void UpdateTeacher(int id, [FromBody] Teacher TeacherInfo)
+        {
+            //if (!TeacherInfo.IsValid()) throw new ApplicationException("Posted Data was not valid.");
+
+            MySqlConnection Conn = School.AccessDatabase();
+            try
+            {
+                
+                Conn.Open();
+
+                MySqlCommand cmd = Conn.CreateCommand();
+
+                cmd.CommandText = "UPDATE teachers SET teacherfname=@TeacherFname, teacherlname=@TeacherLname, employeenumber=@EmployeeNumber, hiredate=@HireDate, salary=@Salary WHERE teacherid=@TeacherId";
+                cmd.Parameters.AddWithValue("@TeacherFname", TeacherInfo.TeacherFname);
+                cmd.Parameters.AddWithValue("@TeacherLname", TeacherInfo.TeacherLname);
+                cmd.Parameters.AddWithValue("@EmployeeNumber", TeacherInfo.EmployeeNumber);
+                cmd.Parameters.AddWithValue("@HireDate", TeacherInfo.HireDate);
+                cmd.Parameters.AddWithValue("@Salary", TeacherInfo.Salary);
+                cmd.Parameters.AddWithValue("@TeacherId", id);
+                cmd.Prepare();
+
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (MySqlException ex)
+            {
+                throw new ApplicationException("Issue was a database issue.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("There was a server issue.", ex);
+            }
+            finally
+            {
+                Conn.Close();
+
+            }
 
         }
     }

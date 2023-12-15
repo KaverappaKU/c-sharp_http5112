@@ -80,5 +80,23 @@ namespace CumulativeProject.Controllers
 
             return View(NewTeacher);
         }
+
+        // GET Teacher/UpdateTeacher/{id}
+        public ActionResult UpdateTeacher(int id)
+        {
+            try
+            {
+                TeacherDataController controller = new TeacherDataController();
+                Teacher SelectedTeacher = controller.FindTeacher(id);
+                ViewBag.HireDate = Convert.ToDateTime(SelectedTeacher.HireDate).ToString("yyyy-MM-dd");
+                return View(SelectedTeacher);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Error", "Home");
+            }
+
+        }
     }
 }

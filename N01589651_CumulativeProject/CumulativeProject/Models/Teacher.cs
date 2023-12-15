@@ -14,5 +14,7 @@ namespace CumulativeProject.Models
         public string EmployeeNumber;
         public DateTime HireDate;
         public decimal Salary;
+
+
     }
 }

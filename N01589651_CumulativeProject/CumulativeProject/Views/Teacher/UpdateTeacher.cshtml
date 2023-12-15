@@ -1,0 +1,146 @@
+﻿@model CumulativeProject.Models.Teacher
+@{
+    ViewBag.Title = "Update";
+}
+
+<style>
+    .teacherdata {
+        margin-top: 10px;
+    }
+</style>
+
+<div id="update-teachers">
+    <nav>
+        <a class="navlink" href="/Teacher/ShowTeachers/@Model.TeacherId">Back To Show Teachers</a>
+    </nav>
+    <h2>Update Teachers</h2>
+    <form name="update_teacher">
+        <div class="teacherdata">
+            <label for="TeacherFname">First Name:</label>
+            <input type="text" id="TeacherFname" value="@Model.TeacherFname" name="TeacherFname" />
+
+        </div>
+        <div class="teacherdata">
+            <label for="TeacherLname">Last Name:</label>
+            <input type="text" id="TeacherLname" value="@Model.TeacherLname" name="TeacherLname" />
+
+        </div>
+        <div class="teacherdata">
+            <label for="EmployeeNumber">Employee Number:</label>
+            <input type="text" id="EmployeeNumber" value="@Model.EmployeeNumber" name="EmployeeNumber" />
+        </div>
+        <div class="teacherdata">
+            <label for="HireDate">Hire Date:</label>
+            <input type="text" id="HireDate" value="@ViewBag.HireDate" name="HireDate" />
+        </div>
+        <div class="teacherdata">
+            <label for="Salary">Salary:</label>
+            <input type="text" id="Salary" value="@Model.Salary" name="Salary" />
+        </div>
+        <div class="teacherdata">
+            <button type="submit"> Update Teachers</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    window.onload = pageLoad;
+
+    function pageLoad() {
+
+        // creating form handle to define what happens on form submit
+        var formHandle = document.forms.update_teacher;
+        formHandle.onsubmit = UpdateTeacher;
+
+        const locationHref = window.location.href.split('/');
+        const TeacherId = locationHref[locationHref.length - 1];
+
+        function UpdateTeacher() {
+            
+            // Defining URL for api call
+            var URL = "http://localhost:51037/api/TeacherData/UpdateTeacher/" + TeacherId;
+            // Creating a XML HTTP request
+            var xhr = new XMLHttpRequest();
+            // Opening the XHR request
+            xhr.open("POST", URL, true);
+            // Setting the type of content we want to send
+            xhr.setRequestHeader('Content-Type', 'application/json');
+
+            // Declaring variables required for validation purpose
+            var fnameValue = formHandle.TeacherFname;
+            var lnameValue = formHandle.TeacherLname;
+            var employeeNumber = formHandle.EmployeeNumber;
+            var hireDate = formHandle.HireDate;
+            var salary = formHandle.Salary;
+
+            // Regex pattern for employee number validation and hiredate validation
+            var employeeNumberValidation = /^[A-Za-z][0-9]{3}$/;
+            var hiredateValidation = /^(?:19|20)\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
+
+            // Adding validation to First name input field to check whether they are empty and not a number
+            if (fnameValue.value === "" || !Number.isNaN(Number(fnameValue.value))) {
+                fnameValue.style.background = "red";
+                fnameValue.focus();
+                return false;
+            }
+            fnameValue.style.background = "white";
+
+            // Adding validation to Last name input field to check whether they are empty and not a number
+            if (lnameValue.value === "" || !Number.isNaN(Number(lnameValue.value))) {
+                lnameValue.style.background = "red";
+                lnameValue.focus();
+                return false;
+            }
+            lnameValue.style.background = "white";
+
+            // Adding validation to Employee Number input field to check whether they are empty
+            if (employeeNumber.value === "" || !employeeNumberValidation.test(employeeNumber.value)) {
+                employeeNumber.style.background = "red";
+                employeeNumber.focus();
+                return false;
+            }
+            employeeNumber.style.background = "white";
+
+            // Adding validation to Hiredate input field to check whether they are empty
+            if (hireDate.value === "" || !hiredateValidation.test(hireDate.value)) {
+                hireDate.style.background = "red";
+                hireDate.focus();
+                return false;
+            }
+            hireDate.style.background = "white";
+
+            // Adding validation to Salary input field to check whether they are empty and not an alphabet
+            if (salary.value === "" | Number.isNaN(Number(salary.value))) {
+                salary.style.background = "red";
+                salary.focus();
+                return false;
+            }
+            salary.style.background = "white";
+
+            // Declaring the data values you want to send
+            var newTeacher = {
+                "TeacherFname": fnameValue.value,
+                "TeacherLname": lnameValue.value,
+                "EmployeeNumber": employeeNumber.value,
+                "HireDate": hireDate.value,
+                "Salary": salary.value
+            }
+
+
+            // Creating the ready function for sending the XHR request to add teacher data
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status == 204) {
+                    window.location.href = "http://localhost:51037/Teacher/ShowTeachers/" + TeacherId
+                } else {
+                    console.log("API request failed")
+                }
+            }
+            console.log(newTeacher);
+            // Send the json object newTeacher
+            xhr.send(JSON.stringify(newTeacher));
+
+            return false;
+        }
+    }
+</script>
+
