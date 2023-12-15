@@ -9,6 +9,10 @@
     table, th, td {
         border: 1px solid black;
     }
+    a{
+        display:inline-block;
+        margin-right: 20px;
+    }
 </style>
 <div id="containershow">
     <h2>@Model.TeacherFname @Model.TeacherLname</h2>
@@ -29,6 +33,7 @@
 </div>
 <div style="margin-top:10px">
     <button type="submit" style="background:black"><a href="/Teacher/DeleteConfirm/@Model.TeacherId" style="color: white; text-decoration: none">Delete</a></button>
+    <button type="submit" style="background:black"><a href="/Teacher/UpdateTeacher/@Model.TeacherId" style="color: white; text-decoration: none">Update</a></button>
 </div>
 
 
